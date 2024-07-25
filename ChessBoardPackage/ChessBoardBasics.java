@@ -9,7 +9,7 @@ public class ChessBoardBasics {
 
     public static void main(String[] args) {
         // Initialize the chess board
-        Board board = new Board()
+        Board board = new Board();
 
         // Print the initial board
         System.out.println("Initial Board:");
