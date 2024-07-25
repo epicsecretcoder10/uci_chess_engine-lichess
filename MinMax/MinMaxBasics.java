@@ -1,46 +1,56 @@
 package MinMax;
 
-import com.github.bhlangonijr.chesslib.Board;
-import com.github.bhlangonijr.chesslib.Move;
-import com.github.bhlangonijr.chesslib.Side;
+import chesslib.*;
 
 public class MinMax {
     // Infinity placeholder to return on checkmate
     public static final int INFINITY = 1000000000;
+    public static final int MAX_DEPTH = 1;
 
     public static void main(String[] args) {
         Board board = new Board("1k6/8/1K6/8/8/6p1/6Q1/8 w - - 0 1");
-        Move solution = minmax(1, board, true);
-        System.out.print(solution.toString());
+        MoveValue solution = minmax(1, board, true);
+        System.out.println("Best move: " + solution.move.toString());
+        System.out.println("Value: " + solution.value);
     }
 
-    public Move minmax(int depth, Board board, boolean inMaximising) {
+    public static class MoveValue {
+        public Move move;
+        public int value;
+
+        public MoveValue(Move move, int value) {
+            this.move = move;
+            this.value = value;
+        }
+    }
+
+    public static MoveValue minmax(int depth, Board board, boolean isMaximising) {
         if (depth == 0) {
-            return null; // no move to return at depth 0
+            return new MoveValue(null, evaluate(board));
         } else {
             Move bestMove = null;
-            int bestValue = inMaximising ? -INFINITY : INFINITY;
+            int bestValue = isMaximising ? -INFINITY : INFINITY;
             for (Move move : board.legalMoves()) {
                 board.doMove(move);
-                int value = minmax(depth - 1, board, !inMaximising);
+                MoveValue result = minmax(depth - 1, board, !isMaximising);
                 board.undoMove();
-                if (inMaximising) {
-                    if (value > bestValue) {
-                        bestValue = value;
+                if (isMaximising) {
+                    if (result.value > bestValue) {
+                        bestValue = result.value;
                         bestMove = move;
                     }
                 } else {
-                    if (value < bestValue) {
-                        bestValue = value;
+                    if (result.value < bestValue) {
+                        bestValue = result.value;
                         bestMove = move;
                     }
                 }
             }
-            return bestMove;
+            return new MoveValue(bestMove, bestValue);
         }
     }
 
-    public int evaluate(Board board) {
+    public static int evaluate(Board board) {
         if (isCheckmate(board)) {
             if (board.getSideToMove() == Side.WHITE) {
                 return -INFINITY;
@@ -59,7 +69,7 @@ public class MinMax {
         return materialPoints;
     }
 
-    private int getPieceValue(com.github.bhlangonijr.chesslib.Piece.Type type) {
+    private static int getPieceValue(com.github.bhlangonijr.chesslib.Piece.Type type) {
         switch (type) {
             case PAWN:
                 return 1;
@@ -76,7 +86,7 @@ public class MinMax {
         }
     }
 
-    public boolean isCheckmate(Board board) {
+    public static boolean isCheckmate(Board board) {
         if (!board.isKingInCheck()) {
             return false;
         }
