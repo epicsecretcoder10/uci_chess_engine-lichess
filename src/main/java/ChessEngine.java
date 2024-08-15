@@ -1,4 +1,7 @@
-import com.github.bhlangonijr.chesslib.*;
+import com.github.bhlangonijr.chesslib.Board;
+import com.github.bhlangonijr.chesslib.Side;
+import com.github.bhlangonijr.chesslib.move.Move;
+import com.github.bhlangonijr.chesslib.Square;
 
 public class ChessEngine {
 
@@ -6,10 +9,7 @@ public class ChessEngine {
         testGame();
     }
 
-    public static void testGame() {
-        Board board = new Board();
-        Move move = new Move(Square.E2, Square.E4); // Create a Move object
-        board.doMove(move);
-        System.out.println(board.toString());
+    public static void evaluate() {
+        
     }
 }
